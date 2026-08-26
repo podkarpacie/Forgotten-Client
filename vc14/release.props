@@ -9,6 +9,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)\obj_r\%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>

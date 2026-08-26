@@ -647,7 +647,33 @@ int LuaInterface::luaCppFunctionCallback(lua_State* L)
 {
     // retrieves function pointer from userdata
     auto funcPtr = static_cast<LuaCppFunctionPtr*>(g_lua.popUpvalueUserdata());
-    assert(funcPtr);
+    if(!funcPtr) {
+        // diagnostics: identify the offending call site
+        if(FILE* f = fopen("nullfuncptr.log", "w")) {
+            std::string called = "<unknown>";
+            {
+                int type = lua_type(L, 1);
+                if(type == LUA_TSTRING)
+                    called = lua_tostring(L, 1);
+                else if(type == LUA_TFUNCTION) {
+                    lua_getfield(L, LUA_GLOBALSINDEX, "debug");
+                    if(lua_istable(L, -1)) {
+                        lua_getfield(L, -1, "traceback");
+                        if(lua_isfunction(L, -1)) {
+                            lua_pushvalue(L, 1);
+                            if(lua_pcall(L, 1, 1, 0) == 0 && lua_isstring(L, -1))
+                                called = lua_tostring(L, -1);
+                        }
+                    }
+                    lua_pop(L, 2);
+                }
+            }
+            std::string traceback = g_lua.traceback("", 0);
+            fprintf(f, "null funcPtr, called function: %s\nstack:\n%s\n", called.c_str(), traceback.c_str());
+            fclose(f);
+        }
+        return 0;
+    }
 
     int numRets = 0;
 
