@@ -1,0 +1,90 @@
+Opened log file 'C:\Users\Admin\Desktop\Forgotten Client\debug\heap-analysis.txt'
+
+Microsoft (R) Windows Debugger Version 10.0.19041.685 AMD64
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\atlmfc.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\concurrency.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\cpp_rest.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\stl.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Data.Json.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Media.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\windows.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\winrt.natvis'
+
+Loading Dump File [C:\Dumps\Tibia.exe.472.dmp]
+User Mini Dump File with Full Memory: Only application data is available
+
+
+************* Path validation summary **************
+Response                         Time (ms)     Location
+OK                                             C:\Users\Admin\Desktop\Forgotten Client\vc14
+Deferred                                       srv*C:\symbols*https://msdl.microsoft.com/download/symbols
+Symbol search path is: C:\Users\Admin\Desktop\Forgotten Client\vc14;srv*C:\symbols*https://msdl.microsoft.com/download/symbols
+Executable search path is: 
+Windows 10 Version 19045 MP (4 procs) Free x64
+Product: WinNt, suite: SingleUserTS
+19041.1.amd64fre.vb_release.191206-1406
+Machine Name:
+Debug session time: Thu Aug 27 00:50:40.000 2026 (UTC + 2:00)
+System Uptime: 2 days 14:28:22.857
+Process Uptime: 0 days 0:00:01.000
+................................................................
+.........
+Loading unloaded module list
+.....
+This dump file has an exception of interest stored in it.
+The stored exception information can be accessed via .ecxr.
+(1d8.6b0): Unknown exception - code c0000374 (first/second chance not available)
+For analysis of this file, run !analyze -v
+ntdll!NtWaitForMultipleObjects+0x14:
+00007ffc`766ce0f4 c3              ret
+0:000> .ecxr; r; !heap -p; !heap -p -a 00002e02784a4306
+rax=000000f3d0d97908 rbx=00000000c0000374 rcx=0000000000000042
+rdx=00002e02784a4306 rsi=0000000000000001 rdi=00007ffc767997f0
+rip=00007ffc7672f489 rsp=000000f3d0d96050 rbp=0000000000000000
+ r8=0000000000000003  r9=0000000000000080 r10=0000000000000301
+r11=00007ffc76655ba1 r12=0000000000000000 r13=000000f3d0d96570
+r14=000000f3d0d96560 r15=ffffffffffffffff
+iopl=0         nv up ei pl nz na pe nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000202
+ntdll!RtlReportFatalFailure+0x9:
+00007ffc`7672f489 eb00            jmp     ntdll!RtlReportFatalFailure+0xb (00007ffc`7672f48b)
+Last set context:
+rax=000000f3d0d97908 rbx=00000000c0000374 rcx=0000000000000042
+rdx=00002e02784a4306 rsi=0000000000000001 rdi=00007ffc767997f0
+rip=00007ffc7672f489 rsp=000000f3d0d96050 rbp=0000000000000000
+ r8=0000000000000003  r9=0000000000000080 r10=0000000000000301
+r11=00007ffc76655ba1 r12=0000000000000000 r13=000000f3d0d96570
+r14=000000f3d0d96560 r15=ffffffffffffffff
+iopl=0         nv up ei pl nz na pe nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000202
+ntdll!RtlReportFatalFailure+0x9:
+00007ffc`7672f489 eb00            jmp     ntdll!RtlReportFatalFailure+0xb (00007ffc`7672f48b)
+
+    No GlobalFlag bits active for this process
+    active heaps:
+
+ - 25b62470000
+          HEAP_GROWABLE 
+ - 25b62320000
+          HEAP_CLASS_8 
+ - 25b627a0000
+          HEAP_GROWABLE HEAP_CLASS_1 
+ - 25b626f0000
+          HEAP_GROWABLE HEAP_CLASS_1 
+ - 25b6cf80000
+          HEAP_GROWABLE HEAP_CLASS_1 
+ 
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\atlmfc.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\concurrency.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\cpp_rest.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\stl.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Data.Json.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Media.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\windows.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\winrt.natvis'
