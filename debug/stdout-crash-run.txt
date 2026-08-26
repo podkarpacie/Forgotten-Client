@@ -1,0 +1,6 @@
+[startup] g_app.init begin
+GPU AMD Radeon RX 640
+OpenGL 4.6.0 Compatibility Profile Context 26.1.1.251211
+[startup] g_app.init done, g_client.init begin
+[startup] g_client.init done
+[startup] workdir discovered, running init.lua

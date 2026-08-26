@@ -1,0 +1,1 @@
+Assertion failed: funcPtr, file C:\Users\Admin\Desktop\Forgotten Client\src\framework\luaengine\luainterface.cpp, line 650

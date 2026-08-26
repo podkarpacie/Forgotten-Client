@@ -1,0 +1,81 @@
+﻿boost-algorithm:x64-windows                       1.92.0              Boost algorithm module
+boost-align:x64-windows                           1.92.0              Boost align module
+boost-array:x64-windows                           1.92.0              Boost array module
+boost-asio:x64-windows                            1.92.0              Boost asio module
+boost-asio[deadline-timer]:x64-windows                                Build with deadline_timer support
+boost-asio[spawn]:x64-windows                                         Build with spawn (stackful coroutines) support
+boost-assert:x64-windows                          1.92.0              Boost assert module
+boost-atomic:x64-windows                          1.92.0              Boost atomic module
+boost-bind:x64-windows                            1.92.0              Boost bind module
+boost-chrono:x64-windows                          1.92.0              Boost chrono module
+boost-cmake:x64-windows                           1.92.0              Boost cmake module
+boost-compat:x64-windows                          1.92.0              Boost compat module
+boost-concept-check:x64-windows                   1.92.0              Boost concept_check module
+boost-config:x64-windows                          1.92.0              Boost config module
+boost-container-hash:x64-windows                  1.92.0              Boost container_hash module
+boost-container:x64-windows                       1.92.0              Boost container module
+boost-context:x64-windows                         1.92.0              Boost context module
+boost-conversion:x64-windows                      1.92.0              Boost conversion module
+boost-core:x64-windows                            1.92.0              Boost core module
+boost-date-time:x64-windows                       1.92.0              Boost date_time module
+boost-describe:x64-windows                        1.92.0              Boost describe module
+boost-detail:x64-windows                          1.92.0              Boost detail module
+boost-exception:x64-windows                       1.92.0              Boost exception module
+boost-filesystem:x64-windows                      1.92.0              Boost filesystem module
+boost-function-types:x64-windows                  1.92.0              Boost function_types module
+boost-function:x64-windows                        1.92.0              Boost function module
+boost-fusion:x64-windows                          1.92.0              Boost fusion module
+boost-headers:x64-windows                         1.92.0              Boost headers module
+boost-integer:x64-windows                         1.92.0              Boost integer module
+boost-intrusive:x64-windows                       1.92.0              Boost intrusive module
+boost-io:x64-windows                              1.92.0              Boost io module
+boost-iterator:x64-windows                        1.92.0              Boost iterator module
+boost-lexical-cast:x64-windows                    1.92.0              Boost lexical_cast module
+boost-lockfree:x64-windows                        1.92.0              Boost lockfree module
+boost-move:x64-windows                            1.92.0              Boost move module
+boost-mp11:x64-windows                            1.92.0              Boost mp11 module
+boost-mpl:x64-windows                             1.92.0              Boost mpl module
+boost-numeric-conversion:x64-windows              1.92.0              Boost numeric_conversion module
+boost-optional:x64-windows                        1.92.0              Boost optional module
+boost-parameter:x64-windows                       1.92.0              Boost parameter module
+boost-pool:x64-windows                            1.92.0              Boost pool module
+boost-predef:x64-windows                          1.92.0              Boost predef module
+boost-preprocessor:x64-windows                    1.92.0              Boost preprocessor module
+boost-range:x64-windows                           1.92.0              Boost range module
+boost-ratio:x64-windows                           1.92.0              Boost ratio module
+boost-regex:x64-windows                           1.92.0              Boost regex module
+boost-scope:x64-windows                           1.92.0              Boost scope module
+boost-smart-ptr:x64-windows                       1.92.0              Boost smart_ptr module
+boost-static-assert:x64-windows                   1.92.0              Boost static_assert module
+boost-system:x64-windows                          1.92.0              Boost system module
+boost-thread:x64-windows                          1.92.0              Boost thread module
+boost-throw-exception:x64-windows                 1.92.0              Boost throw_exception module
+boost-tokenizer:x64-windows                       1.92.0              Boost tokenizer module
+boost-tuple:x64-windows                           1.92.0              Boost tuple module
+boost-type-index:x64-windows                      1.92.0              Boost type_index module
+boost-type-traits:x64-windows                     1.92.0              Boost type_traits module
+boost-typeof:x64-windows                          1.92.0              Boost typeof module
+boost-uninstall:x64-windows                       1.92.0              Internal vcpkg port used to uninstall Boost
+boost-unordered:x64-windows                       1.92.0              Boost unordered module
+boost-utility:x64-windows                         1.92.0              Boost utility module
+boost-uuid:x64-windows                            1.92.0              Boost uuid module
+boost-variant2:x64-windows                        1.92.0              Boost variant2 module
+boost-variant:x64-windows                         1.92.0              Boost variant module
+boost-winapi:x64-windows                          1.92.0              Boost winapi module
+cryptopp:x64-windows                              2026-03-02          Crypto++ is a free C++ class library of cryptogr...
+egl-registry:x64-windows                          2025-05-27          EGL API and Extension Registry
+fmt:x64-windows                                   12.2.0#1            {fmt} is an open-source formatting library provi...
+glew:x64-windows                                  2.3.1               The OpenGL Extension Wrangler Library (GLEW) is ...
+libogg:x64-windows                                1.3.6#1             Ogg is a multimedia container format, and the na...
+libvorbis:x64-windows                             1.3.7#4             Ogg Vorbis is a fully open, non-proprietary, pat...
+luajit:x64-windows                                2026-08-19          LuaJIT is a Just-In-Time (JIT) compiler for the ...
+openal-soft:x64-windows                           1.25.1#2            OpenAL Soft is an LGPL-licensed, cross-platform,...
+opengl-registry:x64-windows                       2026-08-03          OpenGL, OpenGL ES, and OpenGL ES-SC API and Exte...
+opengl:x64-windows                                2022-12-04#3        Open Graphics Library (OpenGL)[3][4][5] is a cro...
+openssl:x64-windows                               3.6.3               OpenSSL is an open source project that provides ...
+physfs:x64-windows                                3.2.0#1             a library to provide abstract access to various ...
+vcpkg-boost:x64-windows                           2026-08-21          
+vcpkg-cmake-config:x64-windows                    2026-07-21          
+vcpkg-cmake-get-vars:x64-windows                  2025-05-29          
+vcpkg-cmake:x64-windows                           2025-08-07          
+zlib:x64-windows                                  1.3.2#2             A compression library
