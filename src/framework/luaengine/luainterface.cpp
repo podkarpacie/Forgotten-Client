@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2010-2017 OTClient <https://github.com/edubart/otclient>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -648,28 +648,26 @@ int LuaInterface::luaCppFunctionCallback(lua_State* L)
     // retrieves function pointer from userdata
     auto funcPtr = static_cast<LuaCppFunctionPtr*>(g_lua.popUpvalueUserdata());
     if(!funcPtr) {
-        // diagnostics: identify the offending call site
         if(FILE* f = fopen("nullfuncptr.log", "w")) {
-            std::string called = "<unknown>";
-            {
-                int type = lua_type(L, 1);
-                if(type == LUA_TSTRING)
-                    called = lua_tostring(L, 1);
-                else if(type == LUA_TFUNCTION) {
-                    lua_getfield(L, LUA_GLOBALSINDEX, "debug");
-                    if(lua_istable(L, -1)) {
-                        lua_getfield(L, -1, "traceback");
-                        if(lua_isfunction(L, -1)) {
-                            lua_pushvalue(L, 1);
-                            if(lua_pcall(L, 1, 1, 0) == 0 && lua_isstring(L, -1))
-                                called = lua_tostring(L, -1);
-                        }
-                    }
-                    lua_pop(L, 2);
+            fprintf(f, "null funcPtr\n");
+            fprintf(f, "stack top type: %s, iscfunction=%d, ptr=%p\n",
+                lua_typename(L, lua_type(L, 1)), lua_iscfunction(L, 1), lua_topointer(L, 1));
+            if(lua_iscfunction(L, 1)) {
+                const void* cf = lua_tocfunction(L, 1);
+                fprintf(f, "cfunction ptr: %p (callback fn: %p)\n", cf, (void*)&LuaInterface::luaCppFunctionCallback);
+                lua_Debug ar;
+                if(lua_getinfo(L, ">Sn", &ar)) {
+                    fprintf(f, "what=%s source=%s name=%s currentline=%d\n", ar.what, ar.source, ar.name ? ar.name : "(null)", ar.currentline);
                 }
             }
-            std::string traceback = g_lua.traceback("", 0);
-            fprintf(f, "null funcPtr, called function: %s\nstack:\n%s\n", called.c_str(), traceback.c_str());
+            int upCount = 0;
+            while(const char* upName = lua_getupvalue(L, lua_upvalueindex(0) - 1, upCount + 1)) {
+                fprintf(f, "upvalue %d (%s): type=%s\n", upCount + 1, upName, lua_typename(L, lua_type(L, -1)));
+                lua_pop(L, 1);
+                if(++upCount > 8) break;
+            }
+            std::string tb = g_lua.traceback("", 0);
+            fprintf(f, "traceback:\n%s\n", tb.c_str());
             fclose(f);
         }
         return 0;
@@ -714,6 +712,12 @@ void LuaInterface::createLuaState()
     L = luaL_newstate();
     if(!L)
         g_logger.fatal("Unable to create lua state");
+
+#ifdef LUAJIT_VERSION
+    // LuaJIT: run interpreter-only; JIT-compiled frames misroute this
+    // codebase's C-closure binding callbacks on modern builds.
+    luaJIT_setmode(L, 0, LUAJIT_MODE_ENGINE | LUAJIT_MODE_OFF);
+#endif
 
     // load lua standard libraries
     luaL_openlibs(L);

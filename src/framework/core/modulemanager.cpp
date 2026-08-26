@@ -59,7 +59,9 @@ void ModuleManager::autoLoadModules(int maxPriority)
         if(priority > maxPriority)
             break;
         ModulePtr module = pair.second;
+        g_logger.info(stdext::format("[startup] loading module: %s (priority %d)", module->getName(), priority));
         module->load();
+        g_logger.info(stdext::format("[startup] loaded module: %s", module->getName()));
     }
 }
 

@@ -32,6 +32,8 @@
 
 int main(int argc, const char* argv[])
 {
+    std::setvbuf(stdout, nullptr, _IONBF, 0);
+    std::setvbuf(stderr, nullptr, _IONBF, 0);
     std::vector<std::string> args(argv, argv + argc);
 
     // setup application name and version
@@ -40,15 +42,20 @@ int main(int argc, const char* argv[])
     g_app.setVersion(VERSION);
 
     // initialize application framework and forgotten client
+    g_logger.info("[startup] g_app.init begin");
     g_app.init(args);
+    g_logger.info("[startup] g_app.init done, g_client.init begin");
     g_client.init(args);
+    g_logger.info("[startup] g_client.init done");
 
     // find script init.lua and run it
     if(!g_resources.discoverWorkDir("init.lua"))
         g_logger.fatal("Unable to find work directory, the application cannot be initialized.");
+    g_logger.info("[startup] workdir discovered, running init.lua");
 
     if(!g_lua.safeRunScript("init.lua"))
         g_logger.fatal("Unable to run script init.lua!");
+    g_logger.info("[startup] init.lua completed");
 
     // the run application main loop
     g_app.run();
