@@ -1,0 +1,3 @@
+pushCppFunction #1: base=4 end=5 expected=5 OK
+pushCppFunction #2: base=4 end=5 expected=5 OK
+pushCppFunction #3: base=4 end=5 expected=5 OK

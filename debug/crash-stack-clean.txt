@@ -1,0 +1,30 @@
+﻿************* Path validation summary **************
+Response                         Time (ms)     Location
+OK                                             C:\Users\Admin\Desktop\Forgotten Client\vc14
+
+************* Path validation summary **************
+Response                         Time (ms)     Location
+OK                                             C:\Users\Admin\Desktop\Forgotten Client\vc14
+Deferred                                       srv*C:\symbols*https://msdl.microsoft.com/download/symbols
+Symbol search path is: C:\Users\Admin\Desktop\Forgotten Client\vc14;srv*C:\symbols*https://msdl.microsoft.com/download/symbols
+Executable search path is: C:\Users\Admin\Desktop\Forgotten Client\vc14
+Windows 10 Version 19045 MP (4 procs) Free x64
+Product: WinNt, suite: SingleUserTS
+19041.1.amd64fre.vb_release.191206-1406
+Machine Name:
+Debug session time: Thu Aug 27 00:50:40.000 2026 (UTC + 2:00)
+System Uptime: 2 days 14:28:22.857
+Process Uptime: 0 days 0:00:01.000
+................................................................
+.........
+Loading unloaded module list
+.....
+This dump file has an exception of interest stored in it.
+The stored exception information can be accessed via .ecxr.
+(1d8.6b0): Unknown exception - code c0000374 (first/second chance not available)
+For analysis of this file, run !analyze -v
+ntdll!NtWaitForMultipleObjects+0x14:
+00007ffc`766ce0f4 c3              ret
+0:000> .ecxr; k 60
+rax=000000f3d0d97908 rbx=00000000c0000374 rcx=0000000000000042
+rdx=00002e02784a4306 rsi=0000000000000001 rdi=00007ffc767997f0

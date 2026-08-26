@@ -1,0 +1,108 @@
+Opened log file 'C:\Users\Admin\AppData\Local\Temp\opencode\ecxr-stack.txt'
+
+Microsoft (R) Windows Debugger Version 10.0.19041.685 AMD64
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\atlmfc.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\concurrency.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\cpp_rest.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\stl.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Data.Json.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Media.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\windows.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\winrt.natvis'
+
+Loading Dump File [C:\Dumps\Tibia.exe.472.dmp]
+User Mini Dump File with Full Memory: Only application data is available
+
+
+************* Path validation summary **************
+Response                         Time (ms)     Location
+OK                                             C:\Users\Admin\Desktop\Forgotten Client\vc14
+
+************* Path validation summary **************
+Response                         Time (ms)     Location
+OK                                             C:\Users\Admin\Desktop\Forgotten Client\vc14
+Deferred                                       srv*C:\symbols*https://msdl.microsoft.com/download/symbols
+Symbol search path is: C:\Users\Admin\Desktop\Forgotten Client\vc14;srv*C:\symbols*https://msdl.microsoft.com/download/symbols
+Executable search path is: C:\Users\Admin\Desktop\Forgotten Client\vc14
+Windows 10 Version 19045 MP (4 procs) Free x64
+Product: WinNt, suite: SingleUserTS
+19041.1.amd64fre.vb_release.191206-1406
+Machine Name:
+Debug session time: Thu Aug 27 00:50:40.000 2026 (UTC + 2:00)
+System Uptime: 2 days 14:28:22.857
+Process Uptime: 0 days 0:00:01.000
+................................................................
+.........
+Loading unloaded module list
+.....
+This dump file has an exception of interest stored in it.
+The stored exception information can be accessed via .ecxr.
+(1d8.6b0): Unknown exception - code c0000374 (first/second chance not available)
+For analysis of this file, run !analyze -v
+ntdll!NtWaitForMultipleObjects+0x14:
+00007ffc`766ce0f4 c3              ret
+0:000> .ecxr; k 60
+rax=000000f3d0d97908 rbx=00000000c0000374 rcx=0000000000000042
+rdx=00002e02784a4306 rsi=0000000000000001 rdi=00007ffc767997f0
+rip=00007ffc7672f489 rsp=000000f3d0d96050 rbp=0000000000000000
+ r8=0000000000000003  r9=0000000000000080 r10=0000000000000301
+r11=00007ffc76655ba1 r12=0000000000000000 r13=000000f3d0d96570
+r14=000000f3d0d96560 r15=ffffffffffffffff
+iopl=0         nv up ei pl nz na pe nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000202
+ntdll!RtlReportFatalFailure+0x9:
+00007ffc`7672f489 eb00            jmp     ntdll!RtlReportFatalFailure+0xb (00007ffc`7672f48b)
+Child-SP          RetAddr           Call Site
+000000f3`d0d96050 00007ffc`7672f453 ntdll!RtlReportFatalFailure+0x9
+000000f3`d0d960a0 00007ffc`767381d2 ntdll!RtlReportCriticalFailure+0x97
+000000f3`d0d96190 00007ffc`767384ba ntdll!RtlpHeapHandleError+0x12
+000000f3`d0d961c0 00007ffc`7673e141 ntdll!RtlpHpHeapHandleError+0x7a
+000000f3`d0d961f0 00007ffc`76655bf0 ntdll!RtlpLogHeapFailure+0x45
+000000f3`d0d96220 00007ffc`766547b1 ntdll!RtlpFreeHeapInternal+0x4e0
+000000f3`d0d962e0 00007ffc`73d9f04f ntdll!RtlFreeHeap+0x51
+000000f3`d0d96320 00007ffc`74d35eb3 KERNELBASE!GlobalFree+0x2f
+*** WARNING: Unable to verify checksum for Tibia.exe
+000000f3`d0d96360 00007ff6`b354d1c9 kernel32!GlobalFreeStub+0x23
+000000f3`d0d96390 00007ff6`b354c719 Tibia!Stacktrace+0x5b9
+000000f3`d0d96820 00007ffc`73e6c507 Tibia!ExceptionHandler+0x12a9
+000000f3`d0d96c70 00007ffc`766d58d8 KERNELBASE!UnhandledExceptionFilter+0x1e7
+000000f3`d0d96d90 00007ffc`766bce46 ntdll!RtlUserThreadStart$filt$0+0xa2
+000000f3`d0d96dd0 00007ffc`766d296f ntdll!_C_specific_handler+0x96
+000000f3`d0d96e40 00007ffc`76682554 ntdll!RtlpExecuteHandlerForException+0xf
+000000f3`d0d96e70 00007ffc`766d147e ntdll!RtlDispatchException+0x244
+000000f3`d0d97580 00007ffc`4b09a9b8 ntdll!KiUserExceptionDispatch+0x2e
+*** WARNING: Unable to verify checksum for lua51.dll
+000000f3`d0d97c80 00007ff6`b34d7f2a lua51!lj_debug_getinfo+0xc8
+000000f3`d0d97cf0 00007ffc`4b072fad Tibia!LuaInterface::luaCppFunctionCallback+0x15a
+000000f3`d0d97e50 00007ffc`4b0a423d lua51!lj_BC_FUNCC+0x42
+000000f3`d0d97ea0 00007ffc`4b0a43d9 lua51!gc_call_finalizer+0xad
+000000f3`d0d97ee0 00007ffc`4b0a5e53 lua51!gc_finalize+0xf9
+(Inline Function) --------`-------- lua51!gc_onestep+0x21f
+000000f3`d0d97f10 00007ffc`4b0783ca lua51!lj_gc_step+0x293
+000000f3`d0d97f60 00007ff6`b34d9494 lua51!lua_createtable+0x2a
+(Inline Function) --------`-------- Tibia!LuaInterface::newTable+0xd
+000000f3`d0d97f90 00007ff6`b34d9fed Tibia!LuaInterface::pushCppFunction+0x84
+000000f3`d0d97ff0 00007ff6`b342e323 Tibia!LuaInterface::registerClassMemberFunction+0x3d
+000000f3`d0d98020 00007ff6`b340acce Tibia!LuaInterface::registerClassMemberFunction<LocalPlayer>+0x83
+000000f3`d0d980a0 00007ff6`b3467840 Tibia!LuaInterface::bindClassMemberFunction<LocalPlayer,void __cdecl(enum Otc::Skill,int,int),LocalPlayer>+0x10e
+000000f3`d0d981c0 00007ff6`b33db4a9 Tibia!Client::registerLuaFunctions+0xb0e0
+000000f3`d0d9f950 00007ff6`b358e9f3 Tibia!Client::init+0x9
+000000f3`d0d9f980 00007ff6`b35a55b8 Tibia!main+0x643
+(Inline Function) --------`-------- Tibia!invoke_main+0x22
+000000f3`d0d9fa30 00007ffc`74d37374 Tibia!__scrt_common_main_seh+0x10c
+000000f3`d0d9fa70 00007ffc`7667cc91 kernel32!BaseThreadInitThunk+0x14
+000000f3`d0d9faa0 00000000`00000000 ntdll!RtlUserThreadStart+0x21
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\atlmfc.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\concurrency.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\cpp_rest.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\stl.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Data.Json.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Media.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\windows.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\winrt.natvis'

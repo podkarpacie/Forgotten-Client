@@ -1,0 +1,164 @@
+Opened log file 'C:\Users\Admin\AppData\Local\Temp\opencode\dump-analyze-v.txt'
+
+Microsoft (R) Windows Debugger Version 10.0.19041.685 AMD64
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\atlmfc.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\concurrency.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\cpp_rest.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\stl.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Data.Json.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Media.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\windows.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\winrt.natvis'
+
+Loading Dump File [C:\Dumps\Tibia.exe.472.dmp]
+User Mini Dump File with Full Memory: Only application data is available
+
+
+************* Path validation summary **************
+Response                         Time (ms)     Location
+OK                                             C:\Users\Admin\Desktop\Forgotten Client\vc14
+Deferred                                       srv*C:\symbols*https://msdl.microsoft.com/download/symbols
+Symbol search path is: C:\Users\Admin\Desktop\Forgotten Client\vc14;srv*C:\symbols*https://msdl.microsoft.com/download/symbols
+Executable search path is: 
+Windows 10 Version 19045 MP (4 procs) Free x64
+Product: WinNt, suite: SingleUserTS
+19041.1.amd64fre.vb_release.191206-1406
+Machine Name:
+Debug session time: Thu Aug 27 00:50:40.000 2026 (UTC + 2:00)
+System Uptime: 2 days 14:28:22.857
+Process Uptime: 0 days 0:00:01.000
+................................................................
+.........
+Loading unloaded module list
+.....
+This dump file has an exception of interest stored in it.
+The stored exception information can be accessed via .ecxr.
+(1d8.6b0): Unknown exception - code c0000374 (first/second chance not available)
+For analysis of this file, run !analyze -v
+ntdll!NtWaitForMultipleObjects+0x14:
+00007ffc`766ce0f4 c3              ret
+0:000> !analyze -v
+*******************************************************************************
+*                                                                             *
+*                        Exception Analysis                                   *
+*                                                                             *
+*******************************************************************************
+
+*** WARNING: Unable to verify checksum for Tibia.exe
+*** WARNING: Unable to verify checksum for lua51.dll
+*** WARNING: Unable to verify checksum for OpenAL32.dll
+
+KEY_VALUES_STRING: 1
+
+    Key  : Analysis.CPU.Sec
+    Value: 1
+
+    Key  : Analysis.DebugAnalysisProvider.CPP
+    Value: Create: 8007007e on DESKTOP-M7DGG8K
+
+    Key  : Analysis.DebugData
+    Value: CreateObject
+
+    Key  : Analysis.DebugModel
+    Value: CreateObject
+
+    Key  : Analysis.Elapsed.Sec
+    Value: 25
+
+    Key  : Analysis.Memory.CommitPeak.Mb
+    Value: 190
+
+    Key  : Analysis.System
+    Value: CreateObject
+
+    Key  : Timeline.OS.Boot.DeltaSec
+    Value: 224902
+
+    Key  : Timeline.Process.Start.DeltaSec
+    Value: 1
+
+
+NTGLOBALFLAG:  0
+
+PROCESS_BAM_CURRENT_THROTTLED: 0
+
+PROCESS_BAM_PREVIOUS_THROTTLED: 0
+
+APPLICATION_VERIFIER_FLAGS:  0
+
+CONTEXT:  (.ecxr)
+.ecxr
+rax=000000f3d0d97908 rbx=00000000c0000374 rcx=0000000000000042
+rdx=00002e02784a4306 rsi=0000000000000001 rdi=00007ffc767997f0
+rip=00007ffc7672f489 rsp=000000f3d0d96050 rbp=0000000000000000
+ r8=0000000000000003  r9=0000000000000080 r10=0000000000000301
+r11=00007ffc76655ba1 r12=0000000000000000 r13=000000f3d0d96570
+r14=000000f3d0d96560 r15=ffffffffffffffff
+iopl=0         nv up ei pl nz na pe nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000202
+ntdll!RtlReportFatalFailure+0x9:
+00007ffc`7672f489 eb00            jmp     ntdll!RtlReportFatalFailure+0xb (00007ffc`7672f48b)
+.cxr
+Resetting default scope
+
+EXCEPTION_RECORD:  (.exr -1)
+.exr -1
+ExceptionAddress: 00007ffc7672f489 (ntdll!RtlReportFatalFailure+0x0000000000000009)
+   ExceptionCode: c0000374
+  ExceptionFlags: 00000001
+NumberParameters: 1
+   Parameter[0]: 00007ffc767997f0
+
+PROCESS_NAME:  Tibia.exe
+
+ERROR_CODE: (NTSTATUS) 0xc0000374 - A heap has been corrupted.
+
+EXCEPTION_CODE_STR:  c0000374
+
+EXCEPTION_PARAMETER1:  00007ffc767997f0
+
+ADDITIONAL_DEBUG_TEXT:  Followup set based on attribute [Heap_Error_Type] from Frame:[0] on thread:[PSEUDO_THREAD] ; Followup set based on attribute [Is_ChosenCrashFollowupThread] from Frame:[0] on thread:[PSEUDO_THREAD]
+
+FAULTING_THREAD:  ffffffff
+
+STACK_TEXT:  
+00000000`00000000 00000000`00000000 ntdll!RtlpFreeHeapInternal+0x0
+
+
+SYMBOL_NAME:  ntdll!RtlpFreeHeapInternal+0
+
+MODULE_NAME: ntdll
+
+IMAGE_NAME:  ntdll.dll
+
+STACK_COMMAND:  !heap ; ** Pseudo Context ** ManagedPseudo ** Value: 1fcd0ca3510 ** ; kb
+
+FAILURE_BUCKET_ID:  HEAP_CORRUPTION_ACTIONABLE_BlockNotBusy_DOUBLE_FREE_c0000374_ntdll.dll!RtlpFreeHeapInternal
+
+OS_VERSION:  10.0.19041.1
+
+BUILDLAB_STR:  vb_release
+
+OSPLATFORM_TYPE:  x64
+
+OSNAME:  Windows 10
+
+FAILURE_ID_HASH:  {f9e860eb-b03f-7415-804c-7e671e26c730}
+
+Followup:     MachineOwner
+---------
+
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\atlmfc.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\concurrency.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\cpp_rest.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\stl.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Data.Json.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Media.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\windows.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\winrt.natvis'
