@@ -698,8 +698,8 @@ int LuaInterface::luaCppFunctionCallback(lua_State* L)
 int LuaInterface::luaCollectCppFunction(lua_State* L)
 {
     auto funcPtr = static_cast<LuaCppFunctionPtr*>(g_lua.popUserdata());
-    assert(funcPtr);
-    funcPtr->reset();
+    if(funcPtr)
+        funcPtr->reset();
     g_lua.m_totalFuncRefs--;
     return 0;
 }
