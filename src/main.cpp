@@ -45,8 +45,14 @@ int main(int argc, const char* argv[])
     g_logger.info("[startup] g_app.init begin");
     g_app.init(args);
     g_logger.info("[startup] g_app.init done, g_client.init begin");
+    if (!g_lua.safeRunScript("sanity1.lua"))
+        g_logger.fatal("[startup] SANITY1 FAILED - lua state corrupted during g_app.init");
+    g_logger.info("[startup] SANITY1 passed");
     g_client.init(args);
-    g_logger.info("[startup] g_client.init done");
+    g_logger.info("[startup] g_client.init done, running SANITY2");
+    if (!g_lua.safeRunScript("sanity2.lua"))
+        g_logger.fatal("[startup] SANITY2 FAILED - lua state corrupted during g_client.init (binding registration)");
+    g_logger.info("[startup] SANITY2 passed");
 
     // find script init.lua and run it
     if(!g_resources.discoverWorkDir("init.lua"))

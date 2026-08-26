@@ -443,35 +443,58 @@ std::string getExePath() {
 
 std::string Crypt::decryptLuaFile(std::string fileName)
 {
+	std::string fullPath = getExePath();
+	fullPath.append(fileName);
+	std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+	std::ifstream cipher;
+	cipher.open(fullPath);
+	if (!cipher.is_open())
+		return std::string();
+
+	// Forgotten Engine ships PLAINTEXT Lua sources (plan v49). Only run the
+	// Midgard base64+AES pipeline when the first line actually decodes; a raw
+	// Lua line (print/local/comment) either fails base64 or decrypts to binary
+	// garbage, in which case the file is served as-is.
+	std::string firstLine;
+	if (!std::getline(cipher, firstLine))
+		return std::string();
+
 	try {
-
-		std::string fullPath = getExePath();
-		fullPath.append(fileName);
-		std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
-
-		std::ifstream cipher;
-		cipher.open(fullPath);
-
 		CBC_Mode< AES >::Decryption d;
 		d.SetKeyWithIV(key, sizeof(key), iv);
 
-		std::string line, buffer;
+		std::string probe, decoded = g_crypt.base64Decode(firstLine);
+		StringSource(decoded, true,
+			new StreamTransformationFilter(d,
+				new StringSink(probe)
+			)
+		);
+
+		for (unsigned char ch : probe) {
+			if (ch != '\t' && ch != '\n' && ch != '\r' && (ch < 32 || ch > 126))
+				throw std::runtime_error("decoded line is not printable Lua");
+		}
+
+		std::string buffer = probe + "\n";
+		std::string line;
 		while (getline(cipher, line)) {
-			std::string output, decoded = g_crypt.base64Decode(line);
-			StringSource(decoded, true,
+			std::string output, decodedLine = g_crypt.base64Decode(line);
+			StringSource(decodedLine, true,
 				new StreamTransformationFilter(d,
 					new StringSink(output)
 				)
 			);
-
 			buffer.append(output + "\n");
 		}
 
-		cipher.close();
-
 		return buffer;
 	}
-	catch (const CryptoPP::Exception & e) {
-		exit(1);
+	catch (...) {
+		// plaintext (or undecryptable) file: serve the raw content
+		std::ifstream raw(fullPath);
+		std::stringstream ss;
+		ss << raw.rdbuf();
+		return ss.str();
 	}
 }

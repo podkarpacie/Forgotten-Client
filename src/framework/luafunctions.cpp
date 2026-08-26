@@ -154,6 +154,9 @@ void Application::registerLuaFunctions()
     g_lua.bindSingletonFunction("g_logger", "warning", &Logger::warning, &g_logger);
     g_lua.bindSingletonFunction("g_logger", "error", &Logger::error, &g_logger);
     g_lua.bindSingletonFunction("g_logger", "fatal", &Logger::fatal, &g_logger);
+    // TEMP Claude-iter3 probes: isolate no-arg dispatch vs one-string-arg conversion
+    g_lua.bindSingletonFunction("g_logger", "testNoArg", &Logger::fireOldMessages, &g_logger);
+    g_lua.bindSingletonFunction("g_logger", "testStrArg", &Logger::setLogFile, &g_logger);
 
     // ModuleManager
     g_lua.registerSingletonClass("g_modules");
