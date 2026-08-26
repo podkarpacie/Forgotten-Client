@@ -53,3 +53,22 @@ Tibia.exe (built from this exact source with VS2022 v143) aborts during startup:
    so that some binds push a closure with **0 upvalues**?
 3. Is the `__gc` (`luaCollectCppFunction`) running too early and freeing the
    `LuaCppFunction` while the closure is still registered on a class table?
+
+## Update: CRT-linkage theory tested and ruled out (for the current vcpkg build)
+
+An external review flagged that `Release|x64` uses `MultiThreadedDLL` (/MD) while
+`Release|Win32` and the base props default to `MultiThreaded` (/MT), hypothesizing a
+static-CRT LuaJIT lib mismatch. Experiment result:
+
+- Flipping `Release|x64` to `/MT` fails at LINK time with `LNK2038 RuntimeLibrary
+  mismatch: MD_DynamicRelease vs MT_StaticRelease` for every object in vcpkg's
+  `cryptopp.lib` (plus duplicate-symbol errors from `msvcprt.lib` vs `libcpmt.lib`).
+- Therefore the app **must** stay `/MD`: vcpkg's `x64-windows` static archives
+  (cryptopp, zlib) are `/MD`-built and hard-require a `/MD` consumer.
+- `dumpbin /dependents` on the freshly built `lua51.dll` (LuaJIT 2.0, built via
+  `msvcbuild.bat dll`, which sets `/MD /DLUA_BUILD_AS_DLL`) shows it consumes the
+  **dynamic UCRT** (`VCRUNTIME140.dll` + `api-ms-win-crt-*`) - i.e. it is `/MD` too.
+
+Conclusion: in the current vcpkg-based build the entire binary set is `/MD`-consistent.
+The CRT-mismatch theory applies to the *original SDK* dependency layout, not this one.
+The crash remains reproducible with a fully /MD-consistent binary set.
