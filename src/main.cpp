@@ -37,8 +37,8 @@ int main(int argc, const char* argv[])
     std::vector<std::string> args(argv, argv + argc);
 
     // setup application name and version
-    g_app.setName("Forgotten Client");
-    g_app.setCompactName("forgottenclient");
+    g_app.setName("Forgotten Tibia 7.4");
+    g_app.setCompactName("forgottentibia");
     g_app.setVersion(VERSION);
 
     // initialize application framework and forgotten client
