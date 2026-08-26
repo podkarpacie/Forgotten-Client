@@ -100,3 +100,24 @@ is in this commit: breadcrumbs in `main.cpp`, per-module lines in
 `modulemanager.cpp`, probes in `luainterface.cpp`, unbuffered stdout.
 
 Crash signature stays: `0xC0000409` in `ucrtbase.dll` offset `0x7286e`.
+
+## Update 2: decryptLuaFile plaintext fix landed; SECOND issue found (heap corruption during module execution)
+
+ROOT CAUSE OF THE ORIGINAL CRASH - CONFIRMED AND FIXED:
+The Midgard fork ships client scripts ENCRYPTED (base64 + AES-CBC per line, key/IV
+embedded). `Crypt::decryptLuaFile` ran every script through that pipeline and called
+`exit(1)`/aborted on failure. This repository's scripts are PLAINTEXT source, so
+`init.lua` was being garbage-decrypted at first load. Fix: `decryptLuaFile` now probes
+the first line - printable decrypt result processes the file as encrypted; otherwise
+the raw content is served. With this fix the client passes script loading and begins
+executing the real module set (corelib/gamelib/client).
+
+SECOND ISSUE - OPEN:
+With scripts loading correctly, the client now fails later with NTOSL heap corruption
+(`0xC0000374` in ntdll, `RtlReportCriticalFailure`) during real module execution.
+This is the first time the full Lua module set actually executes in a modern rebuild,
+so a latent bug in the rebuilt binding layer is being exercised. Requires a debugger
+session (cdb + first-chance AV, build with /Zi) to pinpoint.
+
+NOTE: an earlier "boot" from the repo root was a false positive (missing-DLL dialog
+kept the process alive).
