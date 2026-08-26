@@ -121,3 +121,38 @@ session (cdb + first-chance AV, build with /Zi) to pinpoint.
 
 NOTE: an earlier "boot" from the repo root was a false positive (missing-DLL dialog
 kept the process alive).
+
+## Update 3: PageHeap finding — use-after-free of a Lua function frame object
+
+With Page Heap /full enabled, the client now traps at the exact faulting instruction:
+
+```
+Access violation c0000005
+lua51!debug_framepc+0x5:
+cmp byte ptr [rdx+0Ah], 0    ; rdx = 0x69d632d5b (freed/garbage frame pointer)
+```
+
+`debug_framepc` is LuaJIT's frame-walker used by `debug.traceback`/`lua_getinfo` —
+invoked from the first C++ binding call out of `init.lua` (the logger breadcrumb path).
+It walks a Lua call frame whose data was **already freed** — PageHeap turns that read
+into an immediate AV instead of silent garbage.
+
+Meaning: a Lua function object (or its frame/proto structure) is being collected
+while still referenced by the executing call chain. This is a use-after-free in the
+**binding registration / GC lifecycle** — matching the earlier observation that a cpp
+closure's upvalue userdata reads back NULL after registration.
+
+Prime suspect: `LuaInterface::pushCppFunction` creates the `LuaCppFunctionPtr`
+userdata + `__gc` metatable, then `lua_pushcclosure(callback, 1)` consumes the
+userdata as upvalue. If the metatable stack discipline under v143/C++17 attaches the
+metatable to the wrong object (or leaves the userdata unanchored for a moment where
+a GC step runs — `lua_createtable` triggers `lj_gc_step` per the crash stack), the
+upvalue can be finalized while its closure survives.
+
+Suggested fix directions:
+1. `lua_gc(L, LUA_GCSTOP)` before binding registration, `LUA_GCRESTART` after —
+   zero-risk test that confirms GC-timing as the trigger.
+2. Anchor the userdata in the registry during construction
+   (`luaL_ref`/`unref` pattern) so it can never be collected early.
+3. Compare `setField`/`setMetatable` stack indices under /std:c++17
+   (luabinder.h template instantiation order).
