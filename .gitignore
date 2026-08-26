@@ -1,0 +1,21 @@
+# Build outputs
+vc14/Midgard/
+vc14/ForgottenClient/
+Midgard/
+x64/
+*.obj
+*.pdb
+*.map
+*.iobj
+*.ipdb
+*.recipe
+*.tlog
+*.ilk
+*.exp
+*.lib
+vc14/*.user
+
+# Local runtime state
+client.json
+client.log
+ForgottenClient.exe

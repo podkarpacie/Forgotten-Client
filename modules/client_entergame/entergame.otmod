@@ -1,0 +1,19 @@
+﻿Module
+  name: client_entergame
+  description: Manages enter game and character list windows
+  author: edubart
+  website: https://github.com/edubart/otclient
+
+  dependencies:
+    - client_topmenu
+
+  @onLoad: |
+    dofile 'entergame'
+    dofile 'characterlist'
+    EnterGame.init()
+    CharacterList.init()
+    EnterGame.setUniqueServer("127.0.0.1", 7172, 740)
+
+  @onUnload: |
+    EnterGame.terminate()
+    CharacterList.terminate()
