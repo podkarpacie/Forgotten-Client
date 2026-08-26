@@ -307,7 +307,7 @@ bool LuaInterface::safeRunScript(const std::string& fileName)
     try {
         runScript(fileName);
         return true;
-    } catch(stdext::exception& e) {
+    } catch(std::exception& e) {
         g_logger.error(stdext::format("Failed to load script '%s': %s", fileName, e.what()));
         return false;
     }
@@ -540,7 +540,7 @@ int LuaInterface::signalCall(int numArgs, int numRets)
         else {
             throw LuaException("attempt to call a non function value", 0);
         }
-    } catch(stdext::exception& e) {
+    } catch(std::exception& e) {
         g_logger.error(stdext::format("protected lua call failed: %s", e.what()));
     }
 
@@ -575,7 +575,7 @@ int LuaInterface::luaScriptLoader(lua_State* L)
     try {
         g_lua.loadScript(fileName);
         return 1;
-    } catch(stdext::exception& e) {
+    } catch(std::exception& e) {
         g_lua.pushString(std::string("\n\t") + e.what());
         return 1;
     }
@@ -589,7 +589,7 @@ int LuaInterface::lua_dofile(lua_State* L)
         g_lua.loadScript(file);
         g_lua.call(0, LUA_MULTRET);
         return g_lua.stackSize();
-    } catch(stdext::exception& e) {
+    } catch(std::exception& e) {
         g_lua.pushString(e.what());
         g_lua.error();
         return 0;
@@ -621,7 +621,7 @@ int LuaInterface::lua_loadfile(lua_State* L)
     try {
         g_lua.loadScript(fileName);
         return 1;
-    } catch(stdext::exception& e) {
+    } catch(std::exception& e) {
         g_lua.pushNil();
         g_lua.pushString(e.what());
         g_lua.error();
@@ -650,21 +650,21 @@ int LuaInterface::luaCppFunctionCallback(lua_State* L)
     if(!funcPtr) {
         if(FILE* f = fopen("nullfuncptr.log", "w")) {
             fprintf(f, "null funcPtr\n");
-            fprintf(f, "stack top type: %s, iscfunction=%d, ptr=%p\n",
-                lua_typename(L, lua_type(L, 1)), lua_iscfunction(L, 1), lua_topointer(L, 1));
-            if(lua_iscfunction(L, 1)) {
-                const void* cf = lua_tocfunction(L, 1);
-                fprintf(f, "cfunction ptr: %p (callback fn: %p)\n", cf, (void*)&LuaInterface::luaCppFunctionCallback);
-                lua_Debug ar;
-                if(lua_getinfo(L, ">Sn", &ar)) {
-                    fprintf(f, "what=%s source=%s name=%s currentline=%d\n", ar.what, ar.source, ar.name ? ar.name : "(null)", ar.currentline);
-                }
-            }
-            int upCount = 0;
-            while(const char* upName = lua_getupvalue(L, lua_upvalueindex(0) - 1, upCount + 1)) {
-                fprintf(f, "upvalue %d (%s): type=%s\n", upCount + 1, upName, lua_typename(L, lua_type(L, -1)));
+            fprintf(f, "arg1 type: %s\n", lua_typename(L, lua_type(L, 1)));
+            fprintf(f, "iscfunction(1): %d\n", lua_iscfunction(L, 1));
+            fprintf(f, "upvalueindex(1) type: %s\n",
+                lua_typename(L, lua_type(L, lua_upvalueindex(1))));
+            if(const char* upName = lua_getupvalue(L, 1, 1)) {
+                fprintf(f, "upvalue 1 (%s): type=%s\n",
+                    upName, lua_typename(L, lua_type(L, -1)));
                 lua_pop(L, 1);
-                if(++upCount > 8) break;
+            } else {
+                fprintf(f, "closure has NO upvalue 1 (created with 0 upvalues?)\n");
+            }
+            lua_Debug ar;
+            if(lua_getinfo(L, "Sln", &ar)) {
+                fprintf(f, "called fn: what=%s source=%s name=%s currentline=%d\n",
+                    ar.what, ar.source, ar.name ? ar.name : "(null)", ar.currentline);
             }
             std::string tb = g_lua.traceback("", 0);
             fprintf(f, "traceback:\n%s\n", tb.c_str());
@@ -681,7 +681,7 @@ int LuaInterface::luaCppFunctionCallback(lua_State* L)
         numRets = (*(funcPtr->get()))(&g_lua);
         g_lua.m_cppCallbackDepth--;
         assert(numRets == g_lua.stackSize());
-    } catch(stdext::exception& e) {
+    } catch(std::exception& e) {
         // cleanup stack
         while(g_lua.stackSize() > 0)
             g_lua.pop();
@@ -1177,6 +1177,11 @@ void LuaInterface::pushCFunction(LuaCFunction func, int n)
 
 void LuaInterface::pushCppFunction(const LuaCppFunction& func)
 {
+    // Claude-suggested stack-desync probe: log entry/exit stack heights for every
+    // registration; the first deviation from base->base+1 is the corruption point.
+    static int s_pushCount = 0;
+    int base = lua_gettop(L);
+
     // create a pointer to func (this pointer will hold the function existence)
     new(newUserdata(sizeof(LuaCppFunctionPtr))) LuaCppFunctionPtr(new LuaCppFunction(func));
     m_totalFuncRefs++;
@@ -1189,6 +1194,17 @@ void LuaInterface::pushCppFunction(const LuaCppFunction& func)
 
     // actually pushes a C function callback that will call the cpp function
     pushCFunction(&LuaInterface::luaCppFunctionCallback, 1);
+
+    int endTop = lua_gettop(L);
+    int n = ++s_pushCount;
+    bool ok = (endTop == base + 1);
+    if (!ok || n <= 3) {
+        if (FILE* f = fopen("pushstack.log", "a")) {
+            fprintf(f, "pushCppFunction #%d: base=%d end=%d expected=%d %s\n",
+                n, base, endTop, base + 1, ok ? "OK" : "<<< DESYNC");
+            fclose(f);
+        }
+    }
 }
 
 void LuaInterface::pushValue(int index)
@@ -1322,7 +1338,7 @@ void LuaInterface::loadFiles(std::string directory, bool recursive, std::string 
         try {
             g_lua.loadScript(fullPath);
             g_lua.call(0, 0);
-        } catch(stdext::exception& e) {
+        } catch(std::exception& e) {
             g_lua.pushString(e.what());
             g_lua.error();
         }
