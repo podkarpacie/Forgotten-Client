@@ -72,3 +72,31 @@ static-CRT LuaJIT lib mismatch. Experiment result:
 Conclusion: in the current vcpkg-based build the entire binary set is `/MD`-consistent.
 The CRT-mismatch theory applies to the *original SDK* dependency layout, not this one.
 The crash remains reproducible with a fully /MD-consistent binary set.
+
+## Instrumentation results (answering the registration-stack question directly)
+
+`pushCppFunction` now logs stack height at entry/exit for every registration
+(first 3 calls plus ANY deviation). Result during a full crashed startup:
+
+```
+pushCppFunction #1: base=4 end=5 expected=5 OK
+pushCppFunction #2: base=4 end=5 expected=5 OK
+pushCppFunction #3: base=4 end=5 expected=5 OK
+(0 DESYNC lines; any deviation anywhere in startup would have been logged)
+```
+
+And with the improved callback diagnostic, `nullfuncptr.log` is **never created**:
+`luaCppFunctionCallback` is never invoked with a NULL upvalue in this build.
+
+So both candidate outcomes are eliminated:
+- NOT a registration stack desync (all registrations balance perfectly)
+- NOT a zero/missing-upvalue closure (the null branch never fires)
+
+The abort therefore happens **inside the first bound call's execution** - after
+`luaCppFunctionCallback` dispatches with a valid funcPtr, i.e. inside the bound
+`std::function` / argument conversion / `Logger::setLogFile` itself - and it is
+silent (`ucrtbase` fast-fail, no C++ exception message). The instrumented source
+is in this commit: breadcrumbs in `main.cpp`, per-module lines in
+`modulemanager.cpp`, probes in `luainterface.cpp`, unbuffered stdout.
+
+Crash signature stays: `0xC0000409` in `ucrtbase.dll` offset `0x7286e`.
