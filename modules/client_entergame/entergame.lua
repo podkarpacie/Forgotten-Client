@@ -102,6 +102,25 @@ end
 
 -- public functions
 function EnterGame.init()
+  mainMenu = g_ui.createWidget('Panel', g_ui.getRootWidget())
+  mainMenu:setId('mainMenu')
+  mainMenu:breakAnchors()
+  mainMenu:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+  mainMenu:addAnchor(AnchorBottom, 'parent', AnchorBottom)
+  mainMenu:setMarginLeft(12)
+  mainMenu:setMarginBottom(12)
+  mainMenu:setWidth(120)
+  mainMenu:setLayout({ type = 'verticalBox' })
+  local playButton = g_ui.createWidget('EnterGameButton', mainMenu)
+  playButton:setText('Play')
+  playButton.onClick = EnterGame.playClicked
+  local settingsButton = g_ui.createWidget('EnterGameButton', mainMenu)
+  settingsButton:setText('Settings')
+  settingsButton.onClick = EnterGame.settingsClicked
+  local quitButton = g_ui.createWidget('EnterGameButton', mainMenu)
+  quitButton:setText('Quit')
+  quitButton.onClick = EnterGame.quitClicked
+  mainMenu:hide()
   enterGame = g_ui.displayUI('entergame')
   enterGameButton = modules.client_topmenu.addLeftButton('enterGameButton', tr('Login') .. ' (Ctrl + G)', '/images/topbuttons/login', EnterGame.openWindow)
   motdButton = modules.client_topmenu.addLeftButton('motdButton', tr('Message of the day'), '/images/topbuttons/motd', EnterGame.displayMotd)
@@ -421,4 +440,22 @@ end
 function EnterGame.disableMotd()
   motdEnabled = false
   motdButton:hide()
+end
+
+
+function EnterGame.showMenu()
+  mainMenu:show()
+end
+
+function EnterGame.playClicked()
+  mainMenu:hide()
+  EnterGame.openWindow()
+end
+
+function EnterGame.settingsClicked()
+  modules.client_options.toggle()
+end
+
+function EnterGame.quitClicked()
+  g_app.quit()
 end
