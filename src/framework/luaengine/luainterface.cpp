@@ -719,6 +719,10 @@ void LuaInterface::createLuaState()
     luaJIT_setmode(L, 0, LUAJIT_MODE_ENGINE | LUAJIT_MODE_OFF);
 #endif
 
+    // plan v49: automatic GC suspended until bindings complete — a GC step
+    // mid-registration finalizes live cpp-function userdata (use-after-free).
+    lua_gc(L, LUA_GCSTOP, 0);
+
     // load lua standard libraries
     luaL_openlibs(L);
 

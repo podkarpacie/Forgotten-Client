@@ -63,6 +63,11 @@ int main(int argc, const char* argv[])
         g_logger.fatal("Unable to run script init.lua!");
     g_logger.info("[startup] init.lua completed");
 
+    // plan v49 NOTE: automatic GC stays SUSPENDED (set at state creation) — a GC
+    // cycle over the completed bindings still triggers the use-after-free in the
+    // cpp-function userdata lifecycle. Session-scoped Lua memory growth is an
+    // accepted tradeoff until the binding lifecycle is fixed properly.
+
     // the run application main loop
     g_app.run();
 
