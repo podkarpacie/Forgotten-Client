@@ -209,3 +209,27 @@ DEEPER FINDING: the crash is NOT in our own code - it is inside lua51.dll
 BEFORE this call. NEXT: run with cdb, break on first-chance AV, walk up the stack
 to find who corrupted the frame chain. The crash is deterministic - same offset
 every time.
+
+## Update 5: frame-walk guard added; crash persists - deeper analysis needed
+
+`loadScript` now skips `getCurrentSourcePath()` when the Lua stack is empty
+(lua_gettop == 0). Crash persists, meaning the stack is NOT empty when
+safeRunScript runs init.lua - the binding registration leaves frames/refson the
+stack, and getCurrentSourcePath walks into corrupted CallInfo entries.
+
+The crash stack (debug/ecxr-stack.txt) is definitive:
+  registerLuaFunctions -> pushCppFunction -> lua_createtable
+  -> lj_gc_step -> gc_finalize -> gc_call_finalizer -> lj_BC_FUNCC
+  -> luaCppFunctionCallback -> lj_debug_getinfo (AV)
+  -> stdext Stacktrace catch -> GlobalFree -> ntdll heap failure
+
+With LUA_GCSTOP the gc_step should never fire during registration - yet the
+GC-STOPPED build still crashes. This means the crash is NOT the GC step at all:
+lj_debug_getinfo is called by getCurrentSourcePath from loadScript, reading a
+CallInfo frame chain that is ALREADY corrupted by earlier code.
+
+The real bug: something during binding registration corrupts the Lua
+CallInfo/base-addr chain. Prime suspect is still pushCppFunction under v143/C++17
+(placement-new + lua_pushcclosure pattern). Fix requires comparing the exact
+machine state at registration time vs an old-toolchain build, or bisecting
+luabinder.h templates one at a time.

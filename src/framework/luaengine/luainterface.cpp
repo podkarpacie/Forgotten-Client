@@ -329,8 +329,15 @@ void LuaInterface::loadScript(const std::string& fileName)
 {
 	// resolve file full path
 	std::string filePath = fileName;
-	if (!stdext::starts_with(fileName, "/"))
-		filePath = getCurrentSourcePath() + "/" + filePath;
+	if (!stdext::starts_with(fileName, "/")) {
+		// only walk Lua frames when a real Lua caller exists; calling from C++
+		// (safeRunScript) leaves no Lua frame and the frame walk crashes under
+		// modern toolchains (lj_debug_getinfo AV - plan v49 client crash).
+		if (lua_gettop(L) > 0)
+			filePath = getCurrentSourcePath() + "/" + filePath;
+		else
+			filePath = "/" + filePath;
+	}
 
 	filePath = g_resources.guessFilePath(filePath, "lua");
 
