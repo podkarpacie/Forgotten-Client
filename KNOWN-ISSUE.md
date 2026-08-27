@@ -156,3 +156,56 @@ Suggested fix directions:
    (`luaL_ref`/`unref` pattern) so it can never be collected early.
 3. Compare `setField`/`setMetatable` stack indices under /std:c++17
    (luabinder.h template instantiation order).
+
+## Update 4: crash is inside safeRunScript(init.lua) — before ANY bound call
+
+Bisect result with unbuffered stdout + breadcrumbs:
+- `[startup] workdir discovered, running init.lua` prints
+- `print("T1 begin")` as the FIRST line of init.lua never prints (even unbuffered)
+- SANITY1 (after g_app.init) and SANITY2 (after all binding registration) both PASS
+  — the Lua state executes scripts fine until the real init.lua is loaded
+
+So the crash is inside `LuaInterface::runScript("init.lua")` itself:
+`loadScript(fileName)` › `getCurrentSourcePath()` › `lua_getinfo` (frames walk) ›
+`g_resources.guessFilePath` › `g_crypt.decryptLuaFile(filePath)` › `loadBuffer`.
+
+Note `loadScript` calls `getCurrentSourcePath()` FIRST - which walks the current
+Lua call frame via `lua_getinfo`. The cdb session AV was in
+`lua51!lj_debug_getinfo` reading a garbage frame - called from
+`LuaInterface::luaCppFunctionCallback+0x15a`... but luaCppFunctionCallback is the
+C-closure callback, NOT the script loader path. However getCurrentSourcePath is
+also called from loadScript - same lua_getinfo machinery.
+
+DEEPER FINDING: the crash is NOT in our own code - it is inside lua51.dll
+`lj_debug_getinfo` reading a corrupted CallInfo frame. The Lua stack was corrupted
+BEFORE this call. Suspect: `LuaInterface::init()` calls `lua_pushthread` +
+`luaL_ref` anchoring, then `createLuaState` may be called twice, or the GC stop
+happened after some allocation.
+
+NEXT: run with cdb, break on first-chance AV, walk up to find who corrupted the
+frame chain. The crash is deterministic and happens at exactly the same offset.
+
+## Update 4: crash is inside safeRunScript(init.lua) - before ANY bound call
+
+Bisect result with unbuffered stdout + breadcrumbs:
+- `[startup] workdir discovered, running init.lua` prints
+- `print("T1 begin")` as the FIRST line of init.lua never prints (even unbuffered)
+- SANITY1 (after g_app.init) and SANITY2 (after all binding registration) both PASS
+  - the Lua state executes scripts fine until the real init.lua is loaded
+
+So the crash is inside `LuaInterface::runScript("init.lua")` itself:
+`loadScript(fileName)` -> `getCurrentSourcePath()` -> `lua_getinfo` (frames walk) ->
+`g_resources.guessFilePath` -> `g_crypt.decryptLuaFile(filePath)` -> `loadBuffer`.
+
+Note `loadScript` calls `getCurrentSourcePath()` FIRST - which walks the current
+Lua call frame via `lua_getinfo`. The cdb session AV was in
+`lua51!lj_debug_getinfo` reading a garbage frame - called from
+`LuaInterface::luaCppFunctionCallback+0x15a`... but luaCppFunctionCallback is the
+C-closure callback, NOT the script loader path. However getCurrentSourcePath is
+also called from loadScript - same lua_getinfo machinery.
+
+DEEPER FINDING: the crash is NOT in our own code - it is inside lua51.dll
+`lj_debug_getinfo` reading a corrupted CallInfo frame. The Lua stack was corrupted
+BEFORE this call. NEXT: run with cdb, break on first-chance AV, walk up the stack
+to find who corrupted the frame chain. The crash is deterministic - same offset
+every time.
