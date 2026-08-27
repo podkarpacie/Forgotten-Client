@@ -233,3 +233,16 @@ CallInfo/base-addr chain. Prime suspect is still pushCppFunction under v143/C++1
 (placement-new + lua_pushcclosure pattern). Fix requires comparing the exact
 machine state at registration time vs an old-toolchain build, or bisecting
 luabinder.h templates one at a time.
+
+## Update 6: open runtime issue - game_things loads before corelib exports are ready
+
+Client boots stable 90+s (GC suspended per Update 3/5 findings). Remaining runtime
+error: game_things.things.lua calls `connect(g_game, ...)` in its `init()` but
+`connect` (defined in corelib/util.lua) is nil at that point - even after adding
+`dependencies: [corelib]` to game_things.otmod. The topological sort appears to
+fire game_things' init() before corelib finishes exporting `dofile 'util'`.
+
+Not yet diagnosed deeply - likely fix is ensuring corelib completes before
+game_things' init() runs, possibly by removing the init() call from @onLoad and
+deferring it, or adjusting the module discovery order in ModuleManager.
+This blocks login menu rendering but not the window itself.
