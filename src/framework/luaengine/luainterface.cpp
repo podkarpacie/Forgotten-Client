@@ -693,7 +693,10 @@ int LuaInterface::luaCppFunctionCallback(lua_State* L)
         while(g_lua.stackSize() > 0)
             g_lua.pop();
         numRets = 0;
-        g_lua.pushString(stdext::format("C++ call failed: %s", g_lua.traceback(e.what())));
+        // plan v49 UAF fix: minimal error signal - no std::string temporaries, no frame-walking
+        // traceback call inside the unwind context (lj_debug_getinfo on the nested-dispatch
+        // frame chain was the 0xC0000005 site). The plain message keeps the Lua-level error.
+        g_lua.pushCString(e.what());
         g_lua.error();
     }
 

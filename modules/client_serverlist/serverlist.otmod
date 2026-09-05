@@ -8,8 +8,8 @@ Module
     - client_entergame
 
   @onLoad: |
-    dofile 'serverlist'
-    dofile 'addserver'
+    dofile '/client_serverlist/serverlist'
+    dofile '/client_serverlist/addserver'
     ServerList.init()
     AddServer.init()
 

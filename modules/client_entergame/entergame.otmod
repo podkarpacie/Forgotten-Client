@@ -8,8 +8,8 @@ Module
     - client_topmenu
 
   @onLoad: |
-    dofile 'entergame'
-    dofile 'characterlist'
+    dofile '/client_entergame/entergame'
+    dofile '/client_entergame/characterlist'
     EnterGame.init()
     CharacterList.init()
     EnterGame.setUniqueServer("127.0.0.1", 7172, 740)

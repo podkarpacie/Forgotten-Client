@@ -1,0 +1,13 @@
+Music files were removed from this distribution.
+
+The client previously shipped with a startup music track (startup.ogg) here.
+It has been removed for licensing reasons.
+
+To add your own startup music:
+  1. Obtain a music file you have the rights to use (Ogg Vorbis format,
+     named startup.ogg).
+  2. Place it in this folder (data/sounds/).
+  3. Restart the client - it will play automatically at the login screen.
+
+The startup track is referenced in modules/client/client.lua
+(musicFilename = "/sounds/startup").

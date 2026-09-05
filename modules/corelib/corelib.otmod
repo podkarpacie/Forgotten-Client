@@ -6,23 +6,28 @@ Module
   reloadable: false
 
   @onLoad: |
-    dofile 'math'
-    dofile 'string'
-    dofile 'table'
-    dofile 'bitwise'
-    dofile 'struct'
+    dofile '/corelib/math'
+    dofile '/corelib/string'
+    dofile '/corelib/table'
+    dofile '/corelib/bitwise'
+    dofile '/corelib/struct'
 
-    dofile 'const'
-    dofile 'util'
-    dofile 'globals'
-    dofile 'config'
-    dofile 'settings'
-    dofile 'keyboard'
-    dofile 'mouse'
-    dofile 'net'
+    dofile '/corelib/const'
+    dofile '/corelib/util'
+    dofile '/corelib/globals'
+    dofile '/corelib/config'
+    dofile '/corelib/settings'
+    dofile '/corelib/keyboard'
+    dofile '/corelib/mouse'
+    dofile '/corelib/net'
 
-    dofiles 'classes'
-    dofiles 'ui'
+    dofiles '/corelib/classes'
 
-    dofile 'inputmessage'
-    dofile 'outputmessage'
+    -- Base classes must load before their alphabetical dependents: uiwindow (for
+    -- uiinputbox/uimessagebox/uiminiwindow) and uitextedit (for uispinbox).
+    dofile '/corelib/ui/uiwindow'
+    dofile '/corelib/ui/uitextedit'
+    dofiles '/corelib/ui'
+
+    dofile '/corelib/inputmessage'
+    dofile '/corelib/outputmessage'

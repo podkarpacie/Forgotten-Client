@@ -1,12 +1,20 @@
 local musicFilename = "/sounds/startup"
 local musicChannel = g_sounds.getChannel(1)
 
+-- Startup music is optional (see data/sounds/music.txt): play only if the operator
+-- added their own startup.ogg file.
+local function playStartupMusic()
+  if g_resources.fileExists(musicFilename) then
+    musicChannel:enqueue(musicFilename, 3)
+  end
+end
+
 function setMusic(filename)
   musicFilename = filename
 
   if not g_game.isOnline() then
     musicChannel:stop()
-    musicChannel:enqueue(musicFilename, 3)
+    playStartupMusic()
   end
 end
 
@@ -26,11 +34,11 @@ function reloadScripts()
 end
 
 function startup()
-  musicChannel:enqueue(musicFilename, 3)
+  playStartupMusic()
   connect(g_game, { onGameStart = function() musicChannel:stop(3) end })
   connect(g_game, { onGameEnd = function()
       g_sounds.stopAll()
-      musicChannel:enqueue(musicFilename, 3)
+      playStartupMusic()
   end })
 
   -- Check for startup errors
@@ -56,7 +64,10 @@ function init()
                    onExit = exit })
 
   g_window.setMinimumSize({ width = 600, height = 480 })
-  g_sounds.preload(musicFilename)
+  -- Startup music is optional: operators drop their own startup.ogg here (see data/sounds/music.txt).
+  if g_resources.fileExists(musicFilename) then
+    g_sounds.preload(musicFilename)
+  end
 
   -- initialize in fullscreen mode on mobile devices
   if g_window.getPlatformType() == "X11-EGL" then

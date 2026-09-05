@@ -22,3 +22,10 @@ ForgottenClient.exe
 Forgotten-Client-*.zip
 Tibia.exe
 *.dmp
+
+# Runtime DLLs staged beside the exe for local runs (packaged by tools/package-release-windows.ps1)
+*.dll
+
+# Local run logs and packaging output
+*.log
+dist/
