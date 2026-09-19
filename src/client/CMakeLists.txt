@@ -76,9 +76,6 @@ set(client_SOURCES ${client_SOURCES}
     ${CMAKE_CURRENT_LIST_DIR}/towns.h
     ${CMAKE_CURRENT_LIST_DIR}/creatures.cpp
     ${CMAKE_CURRENT_LIST_DIR}/creatures.h
-    ${CMAKE_CURRENT_LIST_DIR}/base64.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/base64.h
-    ${CMAKE_CURRENT_LIST_DIR}/CustomCipher.h
 
     # lua
     ${CMAKE_CURRENT_LIST_DIR}/luavaluecasts.cpp

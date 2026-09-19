@@ -38,15 +38,19 @@
 #include <openssl/bn.h>
 #include <openssl/err.h>
 
+#ifdef _WIN32
 #include <windows.h>
+#else
+#include <unistd.h>
+#endif
 
-#include <cryptopp\modes.h>
+#include <cryptopp/modes.h>
 using CryptoPP::CBC_Mode;
 
 #include <cryptopp/aes.h>
 using CryptoPP::AES;
 
-#include <cryptopp\filters.h>
+#include <cryptopp/filters.h>
 using CryptoPP::StringSink;
 using CryptoPP::StringSource;
 using CryptoPP::StreamTransformationFilter;
@@ -435,10 +439,20 @@ int Crypt::rsaGetSize()
 }
 
 std::string getExePath() {
+#ifdef _WIN32
 	char buffer[MAX_PATH];
 	GetModuleFileName(NULL, buffer, MAX_PATH);
 	std::string::size_type pos = std::string(buffer).find_last_of("\\/");
 	return std::string(buffer).substr(0, pos);
+#else
+	char buffer[4096];
+	ssize_t length = readlink("/proc/self/exe", buffer, sizeof(buffer) - 1);
+	if(length <= 0)
+		return std::string();
+	buffer[length] = '\0';
+	std::string::size_type pos = std::string(buffer).find_last_of('/');
+	return std::string(buffer).substr(0, pos);
+#endif
 }
 
 std::string Crypt::decryptLuaFile(std::string fileName)

@@ -6,7 +6,8 @@
 #   the icculus hg host is decommissioned and plain-HTTP clones fail.
 # - Crypto++ (libcrypto++-dev) is REQUIRED by src/framework/CMakeLists.txt
 #   (find_package(cryptopp CONFIG)); the old image never installed it.
-# - Stock Lua 5.1 (LUAJIT=OFF default); luaengine ifdefs its LuaJIT-only calls.
+# - LuaJIT (LUAJIT=ON) matches the shipped build; luainterface.cpp requires
+#   <luajit/lua.hpp>, so stock Lua 5.1 headers are insufficient.
 # - Boost components required by CMake: system, thread, filesystem.
 # - Built binary is /otclient/build/ForgottenClient (CMake project name).
 
@@ -23,11 +24,12 @@ RUN apt-get update && \
         libboost-thread-dev \
         libcrypto++-dev \
         libglew-dev \
-        liblua5.1-dev \
+        libluajit-5.1-dev \
         libopenal-dev \
         libphysfs-dev \
         libssl-dev \
         libvorbis-dev \
+        pkg-config \
         zlib1g-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -35,7 +37,11 @@ WORKDIR /otclient
 COPY CMakeLists.txt ./
 COPY src/ ./src/
 
-RUN cmake -B build -DCMAKE_BUILD_TYPE=Release . && \
+# LuaJIT headers live in luajit-2.1/; the tree includes them as <luajit/...> and the
+# bundled FindLuaJIT.cmake searches a luajit-2.0 suffix — bridge both names.
+RUN ln -s luajit-2.1 /usr/include/luajit && ln -s luajit-2.1 /usr/include/luajit-2.0
+
+RUN cmake -B build -DCMAKE_BUILD_TYPE=Release -DLUAJIT=ON -DUSE_STATIC_LIBS=OFF . && \
     cmake --build build -j"$(nproc)"
 
 # Content so the image carries a complete client tree; the CI gate only needs the build above.

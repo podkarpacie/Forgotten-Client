@@ -13,10 +13,26 @@ endif(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 6)
 # add framework cmake modules
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
-find_package(cryptopp CONFIG REQUIRED)
+# Crypto++ ships no CMake CONFIG package on most distros, so resolve it via
+# pkg-config (libcrypto++.pc) with a manual header/library fallback.
+# (Replaces find_package(cryptopp CONFIG), which cannot succeed on Ubuntu 24.04.)
 set(framework_LIBRARIES "")
 set(framework_DEFINITIONS "")
 set(framework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/..")
+
+find_package(PkgConfig QUIET)
+if(PKG_CONFIG_FOUND)
+    pkg_check_modules(CRYPTOPP QUIET libcrypto++)
+endif()
+if(NOT CRYPTOPP_FOUND)
+    find_path(CRYPTOPP_INCLUDE_DIRS cryptopp/config.h)
+    find_library(CRYPTOPP_LIBRARIES NAMES cryptopp)
+    if(NOT CRYPTOPP_INCLUDE_DIRS OR NOT CRYPTOPP_LIBRARIES)
+        message(FATAL_ERROR "Crypto++ not found (install libcrypto++-dev)")
+    endif()
+endif()
+list(APPEND framework_INCLUDE_DIRS ${CRYPTOPP_INCLUDE_DIRS})
+list(APPEND framework_LIBRARIES ${CRYPTOPP_LIBRARIES})
 set(framework_SOURCES ${framework_SOURCES}
     ${CMAKE_CURRENT_LIST_DIR}/const.h
     ${CMAKE_CURRENT_LIST_DIR}/global.h
@@ -551,4 +567,3 @@ endif()
 
 include_directories(${framework_INCLUDE_DIRS})
 add_definitions(${framework_DEFINITIONS})
-target_link_libraries(main PRIVATE cryptopp-static)
