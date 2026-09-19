@@ -1,2 +1,12 @@
 /build/
 Dockerfile
+.dockerignore
+.git/
+dist/
+dumps/
+debug/
+vc14/
+*.dll
+Tibia.exe
+*.log
+*.pdb

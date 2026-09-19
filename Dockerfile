@@ -1,49 +1,47 @@
-FROM ubuntu@sha256:b88f8848e9a1a4e4558ba7cfc4acc5879e1d0e7ac06401409062ad2627e6fb58 AS builder
+# ForgottenClient Linux compile gate (CI) — Ubuntu 24.04 (noble).
+# A green `docker build` proves the source compiles clean on a current toolchain.
+#
+# Notes:
+# - System PhysFS (libphysfs-dev, 3.x) replaces the old Mercurial-source build;
+#   the icculus hg host is decommissioned and plain-HTTP clones fail.
+# - Crypto++ (libcrypto++-dev) is REQUIRED by src/framework/CMakeLists.txt
+#   (find_package(cryptopp CONFIG)); the old image never installed it.
+# - Stock Lua 5.1 (LUAJIT=OFF default); luaengine ifdefs its LuaJIT-only calls.
+# - Boost components required by CMake: system, thread, filesystem.
+# - Built binary is /otclient/build/ForgottenClient (CMake project name).
 
-RUN apt-get update; \
-  apt-get install -y \
-    build-essential \
-    cmake \
-    git-core \
-    libboost-atomic1.65-dev \
-    libboost-chrono1.65-dev \
-    libboost-date-time1.65-dev \
-    libboost-filesystem1.65-dev \
-    libboost-system1.65-dev \
-    libboost-thread1.65-dev \
-    libglew-dev \
-    liblua5.1-0-dev \
-    libncurses5-dev \
-    libopenal-dev \
-    libssl-dev \
-    libvorbis-dev \
-    mercurial \
-    zlib1g-dev; \
-  apt-get clean && apt-get autoclean
+FROM ubuntu:24.04 AS builder
 
-WORKDIR /
-RUN hg clone -r stable-2.0 http://hg.icculus.org/icculus/physfs/
-WORKDIR /physfs/build/
-RUN cmake ..
-RUN make -j$(nproc)
-RUN make install
+ENV DEBIAN_FRONTEND=noninteractive
 
-COPY ./src/ /otclient/src/.
-COPY CMakeLists.txt /otclient/.
-WORKDIR /otclient/build/
-RUN cmake -DCMAKE_CXX_LINK_FLAGS=-no-pie -DCMAKE_BUILD_TYPE=Release ..
-RUN make -j$(nproc)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        cmake \
+        libboost-filesystem-dev \
+        libboost-system-dev \
+        libboost-thread-dev \
+        libcrypto++-dev \
+        libglew-dev \
+        liblua5.1-dev \
+        libopenal-dev \
+        libphysfs-dev \
+        libssl-dev \
+        libvorbis-dev \
+        zlib1g-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-FROM ubuntu@sha256:b88f8848e9a1a4e4558ba7cfc4acc5879e1d0e7ac06401409062ad2627e6fb58
-RUN apt-get update; \
-  apt-get install -y \
-    libglew2.0 \
-    libopenal1; \
-  apt-get clean && apt-get autoclean
-COPY --from=builder /otclient/build/otclient /otclient/bin/otclient
-COPY ./data/ /otclient/data/.
-COPY ./mods/ /otclient/mods/.
-COPY ./modules/ /otclient/modules/.
-COPY ./init.lua /otclient/.
 WORKDIR /otclient
-CMD ["./bin/otclient"]
+COPY CMakeLists.txt ./
+COPY src/ ./src/
+
+RUN cmake -B build -DCMAKE_BUILD_TYPE=Release . && \
+    cmake --build build -j"$(nproc)"
+
+# Content so the image carries a complete client tree; the CI gate only needs the build above.
+COPY data/ ./data/
+COPY mods/ ./mods/
+COPY modules/ ./modules/
+COPY init.lua ./
+
+CMD ["./build/ForgottenClient"]
