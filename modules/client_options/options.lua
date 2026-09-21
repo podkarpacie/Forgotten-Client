@@ -15,8 +15,8 @@ local defaultOptions = {
   showPrivateMessagesInConsole = true,
   showPrivateMessagesOnScreen = true,
   showLeftPanel = false,
-  foregroundFrameRate = 61,
-  backgroundFrameRate = 201,
+  foregroundFrameRate = 60,
+  backgroundFrameRate = 120,
   painterEngine = 0,
   enableAudio = true,
   enableMusicSound = true,
@@ -88,6 +88,28 @@ function init()
     g_settings.setDefault(k, v)
     options[k] = v
   end
+
+  -- Boot-time apply: the C++ frame counters default to unlimited and the Lua
+  -- setters otherwise only fire when the Options UI is touched, so fresh boots
+  -- run uncapped (full CPU/GPU at the menu). Apply the effective caps and vsync
+  -- here; guarded so a too-early window call can never break module init.
+  -- A missing key reads back as 0, which also means "max", so fall back to the
+  -- default table instead of accidentally un-capping.
+  local function storedOrDefault(key)
+    local value = g_settings.getInteger(key)
+    if value == 0 then value = defaultOptions[key] end
+    return value
+  end
+  options.foregroundFrameRate = storedOrDefault('foregroundFrameRate')
+  options.backgroundFrameRate = storedOrDefault('backgroundFrameRate')
+  options.vsync = g_settings.getBoolean('vsync')
+  pcall(function()
+    local fg = options.foregroundFrameRate
+    g_app.setForegroundPaneMaxFps((fg <= 0 or fg >= 61) and 0 or fg)
+    local bg = options.backgroundFrameRate
+    g_app.setBackgroundPaneMaxFps((bg <= 0 or bg >= 201) and 0 or bg)
+    g_window.setVerticalSync(options.vsync)
+  end)
 
   optionsWindow = g_ui.displayUI('options')
   optionsWindow:hide()
