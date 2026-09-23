@@ -86,23 +86,19 @@ end
 function init()
   for k,v in pairs(defaultOptions) do
     g_settings.setDefault(k, v)
-    options[k] = v
+    if type(v) == 'boolean' then
+      options[k] = g_settings.getBoolean(k, v)
+    elseif type(v) == 'number' then
+      options[k] = g_settings.getInteger(k, v)
+    else
+      options[k] = v
+    end
   end
 
   -- Boot-time apply: the C++ frame counters default to unlimited and the Lua
   -- setters otherwise only fire when the Options UI is touched, so fresh boots
-  -- run uncapped (full CPU/GPU at the menu). Apply the effective caps and vsync
-  -- here; guarded so a too-early window call can never break module init.
-  -- A missing key reads back as 0, which also means "max", so fall back to the
-  -- default table instead of accidentally un-capping.
-  local function storedOrDefault(key)
-    local value = g_settings.getInteger(key)
-    if value == 0 then value = defaultOptions[key] end
-    return value
-  end
-  options.foregroundFrameRate = storedOrDefault('foregroundFrameRate')
-  options.backgroundFrameRate = storedOrDefault('backgroundFrameRate')
-  options.vsync = g_settings.getBoolean('vsync')
+  -- run uncapped (full CPU/GPU at the menu). Guarded so a too-early window
+  -- call can never break module init.
   pcall(function()
     local fg = options.foregroundFrameRate
     g_app.setForegroundPaneMaxFps((fg <= 0 or fg >= 61) and 0 or fg)

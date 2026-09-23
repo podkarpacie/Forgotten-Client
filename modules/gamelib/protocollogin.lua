@@ -85,13 +85,14 @@ function ProtocolLogin:sendLoginPacket()
     msg:addString(data)
   end
 
-  local paddingBytes = g_crypt.rsaGetSize() - (msg:getMessageSize() - offset)
-  assert(paddingBytes >= 0)
-  for i = 1, paddingBytes do
-    msg:addU8(math.random(0, 0xff))
-  end
-
+  -- RSA padding only exists to fill the encrypted block; without packet
+  -- encryption it is trailing noise that strict servers reject, so skip it.
   if g_game.getFeature(GameLoginPacketEncryption) then
+    local paddingBytes = g_crypt.rsaGetSize() - (msg:getMessageSize() - offset)
+    assert(paddingBytes >= 0)
+    for i = 1, paddingBytes do
+      msg:addU8(math.random(0, 0xff))
+    end
     msg:encryptRsa()
   end
 

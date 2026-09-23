@@ -104,14 +104,16 @@ void ProtocolGame::sendLoginPacket(uint challengeTimestamp, uint8 challengeRando
     if(!extended.empty())
         msg->addString(extended);
 
-    // complete the bytes for rsa encryption with zeros
-    int paddingBytes = g_crypt.rsaGetSize() - (msg->getMessageSize() - offset);
-    assert(paddingBytes >= 0);
-    msg->addPaddingBytes(paddingBytes);
-
+    // RSA padding only exists to fill the encrypted block; without packet
+    // encryption it is trailing noise that strict servers reject, so skip it.
     // encrypt with RSA
-    if(g_game.getFeature(Otc::GameLoginPacketEncryption))
+    if(g_game.getFeature(Otc::GameLoginPacketEncryption)) {
+        // complete the bytes for rsa encryption with zeros
+        int paddingBytes = g_crypt.rsaGetSize() - (msg->getMessageSize() - offset);
+        assert(paddingBytes >= 0);
+        msg->addPaddingBytes(paddingBytes);
         msg->encryptRsa();
+    }
 
     if(g_game.getFeature(Otc::GameProtocolChecksum))
         enableChecksum();
