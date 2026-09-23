@@ -143,7 +143,11 @@ void buildMessageModesMap(int version) {
         messageModesMap[Otc::MessageLook]                    = 25;
         messageModesMap[Otc::MessageFailure]                 = 26;
         messageModesMap[Otc::MessageBlue]                    = 27;
-    } else if(version >= 760) {
+    } else if(version >= 740) {
+        // Classic 7.4 shares the 7.6 mode numbering (Say 1, Whisper 2, Yell 3,
+        // Status 21, Look 22, Failure 23, ...); without this branch every
+        // inbound talk record throws "unknown message mode" and outbound chat
+        // has no valid mode to send.
         messageModesMap[Otc::MessageNone]                    = 0;
         messageModesMap[Otc::MessageSay]                     = 1;
         messageModesMap[Otc::MessageWhisper]                 = 2;
