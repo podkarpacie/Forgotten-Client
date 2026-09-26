@@ -1,4 +1,3 @@
--- Classic stone buttons: flat face, dark outline, ink text.
 Button < UIButton
   font: verdana-11px-antialised
   color: #1d1d1d

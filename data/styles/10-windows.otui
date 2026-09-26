@@ -1,4 +1,3 @@
--- Classic stone windows: flat warm-gray face, dark outline, ink title.
 Window < UIWindow
   font: verdana-11px-antialised
   size: 200 200

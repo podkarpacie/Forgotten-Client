@@ -1,6 +1,3 @@
--- Classic stone palette: ink text on stone panels. Labels floating over the
--- dark game view (TextMessageLabel) and the debug terminal keep explicit
--- light colors in their own files.
 Label < UILabel
   font: verdana-11px-antialised
   color: #1d1d1d
