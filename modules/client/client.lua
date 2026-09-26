@@ -50,12 +50,20 @@ function startup()
     errmsg = tr('No graphics card detected, everything will be drawn using the CPU,\nthus the performance will be really bad.\nPlease update your graphics driver to have a better performance.')
   end
 
-  -- Show entergame
+  -- Show the classic main menu first; the login window opens from it.
+  -- A stored autologin session still goes straight in.
   if errmsg or errtitle then
     local msgbox = displayErrorBox(errtitle, errmsg)
-    msgbox.onOk = function() EnterGame.firstShow() end
+    msgbox.onOk = function() EnterGame.showMenu() end
   else
-    EnterGame.firstShow()
+    local autologin = g_settings.getBoolean('autologin')
+    local account = g_crypt.decrypt(g_settings.get('account'))
+    local password = g_crypt.decrypt(g_settings.get('password'))
+    if autologin and account and #account > 0 and password and #password > 0 then
+      EnterGame.firstShow()
+    else
+      EnterGame.showMenu()
+    end
   end
 end
 
@@ -109,11 +117,14 @@ end
 
 function terminate()
   disconnect(g_app, { onRun = startup,
-                      onExit = exit })
+                       onExit = exit })
   -- save window configs
   g_settings.set('window-size', g_window.getUnmaximizedSize())
   g_settings.set('window-pos', g_window.getUnmaximizedPos())
   g_settings.set('window-maximized', g_window.isMaximized())
+  -- Persist everything (account, host, options): a crash on exit
+  -- would otherwise silently drop the session's settings.
+  g_settings.save()
 end
 
 function exit()

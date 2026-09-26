@@ -1,16 +1,17 @@
 TextEdit < UITextEdit
   font: verdana-11px-antialised
-  color: #272727
+  color: #1d1d1d
   size: 86 22
   text-offset: 0 4
   opacity: 1
   padding: 4
-  image-source: /images/ui/textedit
-  image-border: 1
-  selection-color: #272727
+  background-color: #f5f3ed
+  border-width: 1
+  border-color: #232323
+  selection-color: #1d1d1d
   selection-background-color: #cccccc
   $disabled:
-    color: #27272788
+    color: #6f6b6388
     opacity: 0.5
 
 PasswordTextEdit < TextEdit

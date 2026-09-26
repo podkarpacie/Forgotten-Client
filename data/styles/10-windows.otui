@@ -1,27 +1,29 @@
+-- Classic stone windows: flat warm-gray face, dark outline, ink title.
 Window < UIWindow
   font: verdana-11px-antialised
   size: 200 200
   opacity: 1
-  color: #dfdfdf
+  color: #1d1d1d
+  background-color: #c9c5bb
+  border-width: 2
+  border-color: #232323
   text-offset: 0 6
   text-align: top
-  image-source: /images/ui/window
-  image-border: 6
-  image-border-top: 27
   padding-top: 36
   padding-left: 16
   padding-right: 16
   padding-bottom: 16
 
   $disabled:
-    color: #dfdfdf88
+    color: #6f6b6388
 
   $dragging:
     opacity: 0.8
 
 HeadlessWindow < UIWindow
-  image-source: /images/ui/window_headless
-  image-border: 5
+  background-color: #b3afa6
+  border-width: 1
+  border-color: #232323
   padding: 5
 
 MainWindow < Window

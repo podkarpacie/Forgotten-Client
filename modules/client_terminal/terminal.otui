@@ -1,5 +1,6 @@
 TerminalLabel < UILabel
   font: terminus-10px
+  color: #dfdfdf
   text-wrap: true
   text-auto-resize: true
   phantom: true

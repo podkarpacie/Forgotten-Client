@@ -62,6 +62,9 @@ local function onCharacterList(protocol, characters, account, otui)
 
     EnterGame.clearAccountFields()
   end
+  -- Persist immediately: an abnormal exit would otherwise lose the
+  -- stored account, host, and login preferences.
+  g_settings.save()
 
   loadBox:destroy()
   loadBox = nil
@@ -103,23 +106,29 @@ end
 -- public functions
 function EnterGame.init()
   enterGame = g_ui.displayUI('entergame')
+  -- Classic main menu: centered over the background, shown at boot.
   mainMenu = g_ui.createWidget('Panel', g_ui.getRootWidget())
   mainMenu:setId('mainMenu')
   mainMenu:breakAnchors()
-  mainMenu:addAnchor(AnchorLeft, 'parent', AnchorLeft)
-  mainMenu:addAnchor(AnchorBottom, 'parent', AnchorBottom)
-  mainMenu:setMarginLeft(12)
-  mainMenu:setMarginBottom(12)
-  mainMenu:setWidth(120)
+  mainMenu:addAnchor(AnchorHorizontalCenter, 'parent', AnchorHorizontalCenter)
+  mainMenu:addAnchor(AnchorVerticalCenter, 'parent', AnchorVerticalCenter)
+  mainMenu:setWidth(200)
   mainMenu:setLayout(UIVerticalLayout.create(mainMenu))
-  local playButton = g_ui.createWidget('EnterGameButton', mainMenu)
-  playButton:setText('Play')
-  playButton.onClick = EnterGame.playClicked
-  local settingsButton = g_ui.createWidget('EnterGameButton', mainMenu)
-  settingsButton:setText('Settings')
-  settingsButton.onClick = EnterGame.settingsClicked
+  local enterGameButton = g_ui.createWidget('EnterGameButton', mainMenu)
+  enterGameButton:setText('Enter Game')
+  enterGameButton:setWidth(200)
+  enterGameButton.onClick = EnterGame.playClicked
+  local optionsButton = g_ui.createWidget('EnterGameButton', mainMenu)
+  optionsButton:setText('Options')
+  optionsButton:setWidth(200)
+  optionsButton.onClick = EnterGame.settingsClicked
+  local infoButton = g_ui.createWidget('EnterGameButton', mainMenu)
+  infoButton:setText('Info')
+  infoButton:setWidth(200)
+  infoButton.onClick = EnterGame.infoClicked
   local quitButton = g_ui.createWidget('EnterGameButton', mainMenu)
-  quitButton:setText('Quit')
+  quitButton:setText('Exit Game')
+  quitButton:setWidth(200)
   quitButton.onClick = EnterGame.quitClicked
   mainMenu:hide()
   enterGameButton = modules.client_topmenu.addLeftButton('enterGameButton', tr('Login') .. ' (Ctrl + G)', '/images/topbuttons/login', EnterGame.openWindow)
@@ -202,6 +211,10 @@ function EnterGame.terminate()
     loadBox:destroy()
     loadBox = nil
   end
+  if mainMenu then
+    mainMenu:destroy()
+    mainMenu = nil
+  end
   if protocolLogin then
     protocolLogin:cancelLogin()
     protocolLogin = nil
@@ -247,6 +260,7 @@ function EnterGame.clearAccountFields()
   enterGame:getChildById('accountNumberTextEdit'):focus()
   g_settings.remove('account')
   g_settings.remove('password')
+  g_settings.save()
 end
 
 function EnterGame.toggleAuthenticatorToken(clientVersion, init)
@@ -331,6 +345,7 @@ function EnterGame.doLogin()
   g_settings.set('host', G.host)
   g_settings.set('port', G.port)
   g_settings.set('client-version', clientVersion)
+  g_settings.save()
 
   protocolLogin = ProtocolLogin.create()
   protocolLogin.onLoginError = onError
@@ -444,7 +459,10 @@ end
 
 
 function EnterGame.showMenu()
+  if loadBox then return end
+  EnterGame.hide()
   mainMenu:show()
+  mainMenu:raise()
 end
 
 function EnterGame.playClicked()
@@ -454,6 +472,10 @@ end
 
 function EnterGame.settingsClicked()
   modules.client_options.toggle()
+end
+
+function EnterGame.infoClicked()
+  displayInfoBox(tr('About'), g_app.getName() .. ' ' .. g_app.getVersion() .. '\n' .. tr('A classic-style client for Forgotten Engine.'))
 end
 
 function EnterGame.quitClicked()

@@ -42,15 +42,17 @@ TopMenuButtonsPanel < Panel
 
 TopMenuPanel < Panel
   height: 36
-  image-source: /images/ui/panel_top
-  image-repeated: true
+  background-color: #b3afa6
+  border-width-bottom: 1
+  border-color-bottom: #232323
   focusable: false
 
 TopMenuFrameCounterLabel < Label
   font: verdana-11px-rounded
-  color: white
+  color: #1d1d1d
   margin-top: 4
   margin-left: 5
 
 TopMenuPingLabel < Label
   font: verdana-11px-rounded
+  color: #1d1d1d

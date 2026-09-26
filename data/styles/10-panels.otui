@@ -7,13 +7,16 @@ ScrollablePanel < UIScrollArea
   auto-focus: first
 
 FlatPanel < Panel
-  image-source: /images/ui/panel_flat
-  image-border: 1
+  background-color: #b3afa6
+  border-width: 1
+  border-color: #232323
 
 ScrollableFlatPanel < ScrollablePanel
-  image-source: /images/ui/panel_flat
-  image-border: 1
+  background-color: #b3afa6
+  border-width: 1
+  border-color: #232323
 
 LightFlatPanel < Panel
-  image-source: /images/ui/panel_lightflat
-  image-border: 1
+  background-color: #d9d5cc
+  border-width: 1
+  border-color: #232323

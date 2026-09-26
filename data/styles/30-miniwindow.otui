@@ -1,19 +1,19 @@
 MiniWindow < UIMiniWindow
   font: verdana-11px-antialised
+  color: #1d1d1d
   icon-rect: 4 4 16 16
   width: 192
   height: 200
   text-offset: 24 5
   text-align: topLeft
-  image-source: /images/ui/miniwindow
-  image-border: 4
-  image-border-top: 23
-  image-border-bottom: 4
+  background-color: #c9c5bb
+  border-width: 2
+  border-color: #232323
   focusable: false
   &minimizedHeight: 24
 
   $on:
-    image-border-bottom: 2
+    border-width-bottom: 2
 
   UIWidget
     id: miniwindowTopBar

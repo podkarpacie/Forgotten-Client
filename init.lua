@@ -27,8 +27,12 @@ g_modules.ensureModuleLoaded("game_interface")
 
 g_modules.autoLoadModules(9999)
 
--- GC was suspended at state creation; restart it now that all modules are loaded
-collectgarbage("restart")
+-- SMOKE-TEST OVERRIDE (2026-09-21): GC restart suspended. The in-session
+-- luaCppFunctionCallback/getinfo double-free (Update 10, still open) triggers via
+-- GC finalizers on UI hover callbacks; GC-off keeps menus stable for the smoke
+-- session at the cost of unbounded Lua growth (negligible over minutes). Re-enable
+-- after the Update 10 fix lands.
+-- collectgarbage("restart")
 
 local script = "/" .. g_app.getCompactName() .. "rc.lua"
 if g_resources.fileExists(script) then

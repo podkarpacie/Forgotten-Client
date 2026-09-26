@@ -1,23 +1,27 @@
+-- Classic stone palette: ink text on stone panels. Labels floating over the
+-- dark game view (TextMessageLabel) and the debug terminal keep explicit
+-- light colors in their own files.
 Label < UILabel
   font: verdana-11px-antialised
-  color: #dfdfdf
+  color: #1d1d1d
 
   $disabled:
-    color: #dfdfdf88
+    color: #6f6b6388
 
 FlatLabel < UILabel
   font: verdana-11px-antialised
-  color: #dfdfdf
+  color: #1d1d1d
   size: 86 20
   text-offset: 3 3
-  image-source: /images/ui/panel_flat
-  image-border: 1
+  background-color: #b3afa6
+  border-width: 1
+  border-color: #232323
 
   $disabled:
-    color: #dfdfdf88
+    color: #6f6b6388
 
 MenuLabel < Label
 
 GameLabel < UILabel
   font: verdana-11px-antialised
-  color: #dfdfdf
+  color: #1d1d1d

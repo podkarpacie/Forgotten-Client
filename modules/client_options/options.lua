@@ -99,6 +99,10 @@ function init()
   -- setters otherwise only fire when the Options UI is touched, so fresh boots
   -- run uncapped (full CPU/GPU at the menu). Guarded so a too-early window
   -- call can never break module init.
+  -- Boot-time apply: the C++ frame counters default to unlimited and the Lua
+  -- setters otherwise only fire when the Options UI is touched, so fresh boots
+  -- run uncapped (full CPU/GPU at the menu). Guarded so a too-early window
+  -- call can never break module init.
   pcall(function()
     local fg = options.foregroundFrameRate
     g_app.setForegroundPaneMaxFps((fg <= 0 or fg >= 61) and 0 or fg)
